@@ -1,0 +1,14 @@
+auth-timeout-seconds: 60
+password-min-length: 8
+
+database:
+  type: sqlite # sqlite or mysql
+  sqlite:
+    file: auth.db
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: miniauth
+    username: root
+    password: ""
+    use-ssl: false
