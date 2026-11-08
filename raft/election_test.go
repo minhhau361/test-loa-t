@@ -2,6 +2,7 @@ package raft
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -162,7 +163,7 @@ func TestRandomizedElectionTimeout(t *testing.T) {
 
 func TestFileStoreRejectsCorruptJSON(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "broken.json")
-	if err := osWriteFile(path, []byte("{")); err != nil {
+	if err := os.WriteFile(path, []byte("{"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	store, err := NewFileStore(path)
@@ -172,13 +173,4 @@ func TestFileStoreRejectsCorruptJSON(t *testing.T) {
 	if _, err := store.Load(); err == nil {
 		t.Fatal("expected corrupt state error")
 	}
-}
-
-// osWriteFile is a tiny indirection so tests keep filesystem setup explicit.
-var osWriteFile = func(name string, data []byte) error {
-	return writeFile(name, data)
-}
-
-var writeFile = func(name string, data []byte) error {
-	return os.WriteFile(name, data, 0o600)
 }
